@@ -7,9 +7,8 @@ description: |
   Zotero is a free, easy-to-use tool to help you collect, organize, cite, and
   share research.
 icon: snap/local/zotero-icon.png
-license: AGPL-3.0
 
-grade: devel
+grade: stable
 confinement: strict
 architectures: [amd64]
 
