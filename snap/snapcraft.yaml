@@ -36,3 +36,5 @@ apps:
       - browser-support
       - home
       - removable-media
+    environment:
+      DISABLE_WAYLAND: 1
