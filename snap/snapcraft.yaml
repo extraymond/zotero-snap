@@ -1,9 +1,13 @@
 name: zotero-snap
+title: Zotero
 base: core18 # the base snap is the execution environment for this snap
 version: 5.0.80
-summary: Zotero Standalone
+summary: Zotero helps you collect, organize, cite, and share research.
 description: |
-  Zotero Standalone
+  Zotero is a free, easy-to-use tool to help you collect, organize, cite, and
+  share research.
+icon: snap/local/zotero-icon.png
+license: AGPL-3.0
 
 grade: devel
 confinement: strict
@@ -15,7 +19,7 @@ parts:
     source: snap/local
   zotero:
     plugin: dump
-    source: https://www.zotero.org/download/client/dl?channel=release&platform=linux-x86_64&version=5.0.80
+    source: https://www.zotero.org/download/client/dl?channel=release&platform=linux-x86_64&version=$SNAPCRAFT_PROJECT_VERSION
     source-type: tar
     stage-packages:
       - libxt6
@@ -28,12 +32,9 @@ apps:
     command: zotero
     desktop: zotero-launch.desktop
     plugs:
-      - system-observe
-      - hostname-control
       - network-bind
-      - network-observe
       - browser-support
-      - mount-observe
-      - firewall-control
       - home
       - removable-media
+    environment:
+      DISABLE_WAYLAND: 1
