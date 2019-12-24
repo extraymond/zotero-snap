@@ -1,4 +1,4 @@
-name: zotero
+name: zotero-snap
 base: core18 # the base snap is the execution environment for this snap
 version: 5.0.80
 summary: Zotero Standalone
@@ -6,14 +6,8 @@ description: |
   Zotero Standalone
 
 grade: devel
-confinement: devmode
+confinement: strict
 architectures: [amd64]
-
-plugs:
-  read-host:
-    interface: system-files
-    read:
-      - /etc/hosts
 
 parts:
   icon:
@@ -29,7 +23,7 @@ parts:
       - libgtk2.0-0
 
 apps:
-  zotero:
+  zotero-snap:
     extensions: [ gnome-3-28 ]
     command: zotero
     desktop: zotero-launch.desktop
@@ -37,8 +31,8 @@ apps:
       - system-observe
       - hostname-control
       - network-bind
+      - network-observe
       - browser-support
-      - read-host
       - mount-observe
       - firewall-control
       - home
