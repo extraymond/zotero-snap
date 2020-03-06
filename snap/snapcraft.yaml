@@ -1,7 +1,7 @@
 name: zotero-snap
 title: Zotero
 base: core18 # the base snap is the execution environment for this snap
-version: 5.0.82
+version: 5.0.84
 summary: Zotero helps you collect, organize, cite, and share research.
 description: |
   Zotero is a free, easy-to-use tool to help you collect, organize, cite, and
@@ -27,7 +27,7 @@ parts:
 
 apps:
   zotero-snap:
-    extensions: [ gnome-3-28 ]
+    extensions: [gnome-3-28]
     command: zotero
     desktop: zotero-launch.desktop
     plugs:
