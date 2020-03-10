@@ -37,3 +37,5 @@ apps:
       - removable-media
     environment:
       DISABLE_WAYLAND: 1
+      HOME: $SNAP_USER_COMMON
+      XDG_CONFIG_HOME: $SNAP_USER_COMMON
