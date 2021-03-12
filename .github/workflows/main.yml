@@ -1,0 +1,16 @@
+name: rss
+
+on:
+  schedule:
+  - cron: '0 0 * * *'
+
+jobs:
+  upstream:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: guilhem/rss-issues-action@0.4.0
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        feed: "https://github.com/zotero/zotero/releases.atom"
+        lastTime: "180h"
+        labels: "upstream"
