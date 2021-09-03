@@ -1,7 +1,7 @@
 name: zotero-snap
 title: Zotero
 base: core18 # the base snap is the execution environment for this snap
-version: 5.0.96.2
+version: 5.0.96.3
 summary: Zotero helps you collect, organize, cite, and share research.
 description: |
   Zotero is a free, easy-to-use tool to help you collect, organize, cite, and
@@ -11,6 +11,8 @@ icon: snap/local/zotero-icon.png
 grade: stable
 confinement: strict
 architectures: [amd64]
+
+compression: lzo
 
 parts:
   icon:
@@ -39,3 +41,4 @@ apps:
       DISABLE_WAYLAND: 1
       HOME: $SNAP_USER_COMMON
       XDG_CONFIG_HOME: $SNAP_USER_COMMON
+
