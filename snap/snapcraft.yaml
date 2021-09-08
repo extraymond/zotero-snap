@@ -1,6 +1,6 @@
 name: zotero-snap
 title: Zotero
-base: core18 # the base snap is the execution environment for this snap
+base: core20 # the base snap is the execution environment for this snap
 version: 5.0.96.3
 summary: Zotero helps you collect, organize, cite, and share research.
 description: |
@@ -25,11 +25,11 @@ parts:
     stage-packages:
       - libxt6
       - libdbus-glib-1-2
-      - libgtk2.0-0
+      # - libgtk2.0-0
 
 apps:
   zotero-snap:
-    extensions: [gnome-3-28]
+    extensions: [gnome-3-38]
     command: zotero
     desktop: zotero-launch.desktop
     plugs:
