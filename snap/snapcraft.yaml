@@ -33,12 +33,13 @@ apps:
     command: zotero
     desktop: zotero-launch.desktop
     plugs:
+      - desktop-legacy
+      - desktop
       - network-bind
       - browser-support
       - home
       - removable-media
     environment:
-      DISABLE_WAYLAND: 1
       HOME: $SNAP_USER_COMMON
       XDG_CONFIG_HOME: $SNAP_USER_COMMON
 
