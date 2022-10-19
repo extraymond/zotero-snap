@@ -5,16 +5,18 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      snap-file: ${{ steps.build.outputs.snap }}
     steps:
     - uses: actions/checkout@v3
     - uses: snapcore/action-build@v1
-      id: snapcraft
+      id: build
     - name: rename
       run: mv ${{ steps.snapcraft.outputs.snap }} artifact.snap
     - uses: actions/upload-artifact@v3
       with:
         name: snap
-        path: artifact.snap
+        path: ${{ steps.build.outputs.snap }}
 
   push-master:
     needs: build
@@ -24,12 +26,12 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: snap
-          path: artifact.snap
+          path: .
       - uses: snapcore/action-publish@v1
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
         with:
-          snap: artifact.snap
+          snap: ${{needs.build.outputs.snap-file}}
           release: candidate
   push-beta:
     needs: build
@@ -39,10 +41,10 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: snap
-          path: artifact.snap
+          path: .
       - uses: snapcore/action-publish@v1
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
         with:
-          snap: artifact.snap
+          snap: ${{needs.build.outputs.snap-file}}
           release: beta
