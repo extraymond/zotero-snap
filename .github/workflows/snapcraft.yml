@@ -5,13 +5,31 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      build: ${{ steps.build.outputs.snap }}
     steps:
     - uses: actions/checkout@v3
     - uses: snapcore/action-build@v1
       id: build
-    - uses: snapcore/action-publish@v1
-      env:
-        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
-      with:
-        snap: ${{ steps.build.outputs.snap }}
-        release: edge
+  push-master:
+    needs: build
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
+        with:
+          snap: ${{ needs.build.outputs.build }}
+          release: candidate
+  push-beta:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/beta'
+    steps:
+      - uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
+        with:
+          snap: ${{ needs.build.outputs.build }}
+          release: beta
