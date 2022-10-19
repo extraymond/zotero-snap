@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/master'
     steps:
-      - uses: snapcore/action-publish@v1.1
+      - uses: snapcore/action-publish@v1
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
         with:
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/beta'
     steps:
-      - uses: snapcore/action-publish@v1.1
+      - uses: snapcore/action-publish@v1
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
         with:
