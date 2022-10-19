@@ -25,7 +25,7 @@ jobs:
         with:
           name: snap
           path: .
-      - uses: snapcore/action-publish@v1
+      - uses: snapcore/action-publish@master
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
         with:
@@ -40,7 +40,7 @@ jobs:
         with:
           name: snap
           path: .
-      - uses: snapcore/action-publish@v1
+      - uses: snapcore/action-publish@master
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
         with:
