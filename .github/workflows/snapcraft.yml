@@ -3,29 +3,46 @@ name: snapcraft
 on: push
 
 jobs:
-  build-stable:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      snap-file: ${{ steps.build.outputs.snap }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: snapcore/action-build@v1
+      id: build
+    - uses: actions/upload-artifact@v3
+      with:
+        name: snap
+        path: ${{ steps.build.outputs.snap }}
+
+  push-master:
+    needs: build
+    runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: snapcore/action-build@v1
-      id: outputs
-    - uses: snapcore/action-publish@v1
-      env:
-        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
-      with:
-        snap: ${{ steps.build-stable.outputs.snap }}
-        release: candidate
-  build-beta:
+      - uses: actions/download-artifact@v3
+        with:
+          name: snap
+          path: .
+      - uses: snapcore/action-publish@master
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
+        with:
+          snap: ${{needs.build.outputs.snap-file}}
+          release: candidate
+  push-beta:
+    needs: build
+    runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/beta'
-    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: snapcore/action-build@v1
-      id: outputs
-    - uses: snapcore/action-publish@v1
-      env:
-        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
-      with:
-        snap: ${{ steps.build-beta.outputs.snap }}
-        release: beta
+      - uses: actions/download-artifact@v3
+        with:
+          name: snap
+          path: .
+      - uses: snapcore/action-publish@master
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
+        with:
+          snap: ${{needs.build.outputs.snap-file}}
+          release: beta
