@@ -1,7 +1,7 @@
 name: zotero-snap
 title: Zotero
 base: core20 # the base snap is the execution environment for this snap
-version: '6.0.27'
+version: '6.0.30'
 summary: Zotero helps you collect, organize, cite, and share research.
 description: |
   Zotero is a free, easy-to-use tool to help you collect, organize, cite, and
