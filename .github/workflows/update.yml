@@ -1,0 +1,45 @@
+# This workflow checks if a new Zotero release is available. If so, it
+# updates the snapcraft.yaml file and commits the changes to the repository.
+# It runs every day at midnight UTC, and can also be triggered manually.
+
+name: update
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get Zotero version
+        id: zotero
+        uses: oprypin/find-latest-tag@v1
+        with:
+          repository: zotero/zotero
+      - name: Get Zotero-Snap version
+        id: snap
+        uses: mikefarah/yq@v4.40.5
+        with:
+          cmd: yq '.version' snap/snapcraft.yaml
+      - name: Compare versions
+        run: |
+          zotero=${{ steps.zotero.outputs.tag }}
+          snap=${{ steps.snap.outputs.result }}
+          if [ $zotero == $snap ]; then
+            echo Zotero-Snap is up to date
+          else
+            echo New Zotero release available: $snap => $zotero
+            echo "new_version=$zotero" >> "$GITHUB_ENV"
+          fi
+      - name: Update snapcraft.yaml
+        if: ${{ env.new_version }}
+        run: |
+          echo "Updating snapcraft.yaml to ${{ env.new_version }}"
+          # Use sed instead of yq, because yq deletes empty lines
+          sed -i "s/^version: .*/version: '${{ env.new_version }}'/" snap/snapcraft.yaml
+      - name: Commit changes
+        if: ${{ env.new_version }}
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Update Zotero-Snap to ${{ env.new_version }}
