@@ -1,48 +1,23 @@
+# This workflow publishes a snap on updates to the master and beta branch
+
 name: snapcraft
-
-on: push
-
+on:
+  push:
+    branches:
+      - master
+      - beta
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
-    outputs:
-      snap-file: ${{ steps.build.outputs.snap }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: snapcore/action-build@v1
-      id: build
-    - uses: actions/upload-artifact@v3
-      with:
-        name: snap
-        path: ${{ steps.build.outputs.snap }}
-
-  push-master:
-    needs: build
-    runs-on: ubuntu-20.04
-    if: github.ref == 'refs/heads/master'
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: snap
-          path: .
-      - uses: snapcore/action-publish@master
+      - uses: actions/checkout@v3
+      - name: Build snap
+        uses: snapcore/action-build@v1
+        id: build
+      - name: Publish to the Snap Store
+        uses: snapcore/action-publish@master
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
         with:
-          snap: ${{needs.build.outputs.snap-file}}
-          release: candidate
-  push-beta:
-    needs: build
-    runs-on: ubuntu-20.04
-    if: github.ref == 'refs/heads/beta'
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: snap
-          path: .
-      - uses: snapcore/action-publish@master
-        env:
-          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
-        with:
-          snap: ${{needs.build.outputs.snap-file}}
-          release: beta
+          snap: ${{ steps.build.outputs.snap }}
+          release: ${{ github.ref_name == 'master' && 'candidate' || 'beta' }}
