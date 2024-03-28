@@ -34,12 +34,10 @@ jobs:
           fi
       - name: Update snapcraft.yaml
         if: ${{ env.new_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Updating snapcraft.yaml to ${{ env.new_version }}"
           # Use sed instead of yq, because yq deletes empty lines
           sed -i "s/^version: .*/version: '${{ env.new_version }}'/" snap/snapcraft.yaml
-      - name: Commit changes
-        if: ${{ env.new_version }}
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: Update Zotero-Snap to ${{ env.new_version }}
+          gh pr create -B "gh_action_pr_${{ env.new_version }}" -H master --title "update zotero to ${{ env.new_version }}" --body "Created by Github action"
