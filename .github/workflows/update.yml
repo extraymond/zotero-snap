@@ -41,6 +41,7 @@ jobs:
       - name: Commit changes
         if: ${{ env.new_version }}
         uses: stefanzweifel/git-auto-commit-action@v5
+        id: auto-commit-action
         with:
           commit_message: Update Zotero-Snap to ${{ env.new_version }}
           create_branch: true
