@@ -38,6 +38,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Updating snapcraft.yaml to ${{ env.new_version }}"
+          git checkout -b "gh_action_pr_${{ env.new_version }}" -u origin
+          git push
           # Use sed instead of yq, because yq deletes empty lines
           sed -i "s/^version: .*/version: '${{ env.new_version }}'/" snap/snapcraft.yaml
           gh pr create -B "gh_action_pr_${{ env.new_version }}" -H master --title "update zotero to ${{ env.new_version }}" --body "Created by Github action"
