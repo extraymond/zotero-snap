@@ -29,7 +29,7 @@ jobs:
           if [ $zotero == $snap ]; then
             echo Zotero-Snap is up to date
           else
-            echo New Zotero release available: $snap => $zotero
+            echo "New Zotero release available: $snap => $zotero"
             echo "new_version=$zotero" >> "$GITHUB_ENV"
           fi
       - name: Update snapcraft.yaml
