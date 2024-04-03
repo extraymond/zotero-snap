@@ -23,7 +23,7 @@ jobs:
           version=$(echo "$url" | grep -oP 'Zotero-\K[0-9.]+(?=_linux-x86_64.tar.bz2)')
           
           echo "Latest Zotero version for Linux: $version"
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
