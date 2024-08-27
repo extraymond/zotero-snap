@@ -1,13 +1,12 @@
 name: zotero-snap
 title: Zotero
 base: core22 # the base snap is the execution environment for this snap
-version: '7.0.2'
+version: "7.0.2"
 summary: Zotero helps you collect, organize, cite, and share research.
 description: |
   Zotero is a free, easy-to-use tool to help you collect, organize, cite, and
   share research.
 icon: snap/local/zotero-icon.png
-
 grade: stable
 confinement: strict
 architectures: [amd64]
@@ -22,9 +21,10 @@ parts:
     plugin: dump
     source: https://www.zotero.org/download/client/dl?channel=release&platform=linux-x86_64&version=$SNAPCRAFT_PROJECT_VERSION
     source-type: tar
-    # stage-packages:
-    #   - libxt6
-    #   - libdbus-glib-1-2
+
+layout:
+  /opt:
+    bind: $SNAP
 
 apps:
   zotero-snap:
@@ -32,12 +32,23 @@ apps:
     command: zotero
     desktop: zotero-launch.desktop
     plugs:
-      - home      
+      - home
       - network-bind
       - browser-support
       - removable-media
       - cups-control
+      - audio-playback
+      - mount-observe
+
     environment:
       HOME: $SNAP_USER_COMMON
       XDG_CONFIG_HOME: $SNAP_USER_COMMON
       DISABLE_WAYLAND: 1
+    slots:
+      - dbus-daemon
+
+slots:
+  dbus-daemon:
+    interface: dbus
+    bus: session
+    name: org.mozilla.zotero
