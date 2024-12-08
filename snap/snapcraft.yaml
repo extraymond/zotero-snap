@@ -43,7 +43,6 @@ apps:
     environment:
       HOME: $SNAP_USER_COMMON
       XDG_CONFIG_HOME: $SNAP_USER_COMMON
-      DISABLE_WAYLAND: 1
     slots:
       - dbus-daemon
 
