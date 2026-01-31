@@ -12,21 +12,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Detect Zotero Linux Version
         id: zotero
         run: |
           # Use curl to follow the redirect and capture the final URL
           url=$(curl -Ls -o /dev/null -w %{url_effective} 'https://www.zotero.org/download/client/dl?channel=release&platform=linux-x86_64')
-          
+
           # Extract the version from the URL
-          version=$(echo "$url" | grep -oP 'Zotero-\K[0-9.]+(?=_linux-x86_64.tar.bz2)')
-          
+          version=$(echo "$url" | grep -oP 'Zotero-\K[0-9.]+(?=_linux-x86_64.tar.xz)')
+
           echo "Latest Zotero version for Linux: $version"
           echo "version=$version" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Get Zotero-Snap version
         id: snap
         uses: mikefarah/yq@v4.40.5
@@ -43,14 +43,14 @@ jobs:
             echo "New Zotero release available: $snap => $zotero"
             echo "new_version=$zotero" >> "$GITHUB_ENV"
           fi
-      
+
       - name: Update snapcraft.yaml
         if: ${{ env.new_version }}
         run: |
           echo "Updating snapcraft.yaml to ${{ env.new_version }}"
           # Use sed instead of yq, because yq deletes empty lines
           sed -i "s/^version: .*/version: '${{ env.new_version }}'/" snap/snapcraft.yaml
-      
+
       - name: Commit changes
         if: ${{ env.new_version }}
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -59,11 +59,11 @@ jobs:
           commit_message: Update Zotero-Snap to ${{ env.new_version }}
           create_branch: true
           branch: ${{ env.new_version }}
-      
+
       - name: Create PR
         if: steps.auto-commit-action.outputs.changes_detected == 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-         sleep 3 # wait for github to get the created pr
-         gh pr create -H "${{ env.new_version }}" -B master --title "update zotero to ${{ env.new_version }}" --body "Created by Github action" 
+          sleep 3 # wait for github to get the created pr
+          gh pr create -H "${{ env.new_version }}" -B master --title "update zotero to ${{ env.new_version }}" --body "Created by Github action"
